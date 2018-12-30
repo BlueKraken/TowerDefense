@@ -7,18 +7,20 @@ class TipoAtaque {
     ) {}
 }
 
-export class Torre {
+class Torre {
     constructor() {}
     
     public tipoAtaque: TipoAtaque;
     public rango: number;
     public posicion: Punto;
+    
+    private _posicionesEnRango: Punto[];
 
-    public observar(monstruos: any[]) {
+    public observar() {
         
     }
 
-    private disparar(monstruo: any) {
-        
+    public atacar() {
+
     }
 }
