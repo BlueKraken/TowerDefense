@@ -23,18 +23,17 @@ export class Torre {
     private _$observador: Observer;
     private _objetivo: Monstruo;
     private _idIntervaloAtaque: number;
-    private _posicionesEnRango: Punto[];
 
     public eliminarTorre() {
         this._monstruos$.unSubscribe(this._$observador);
     }
 
     private observar(monstruos: Monstruo[]) {
-        // necesito la posición del monstruo (sólo lectura)
-        // para calcular si la posición es válida
         const enRango = (p: Punto) => 
+            p.distancia(this._posicion) >= this._rango;
 
-        this._objetivo = monstruos.find(m => true)
+        const objetivo = monstruos.find(m => enRango(m.posicion));
+        this.cambiarObjetivo(objetivo);
     }
 
     private cambiarObjetivo(nuevoObjetivo: Monstruo) {
@@ -46,7 +45,7 @@ export class Torre {
         clearInterval(this._idIntervaloAtaque);
 
         this._idIntervaloAtaque = setInterval(
-            () => this._objetivo.recibirDanio(),
+            () => this._objetivo.recibirDanio(this._tipoAtaque.fuerza),
             this._tipoAtaque.cadenciaDeTiro)
     }
 }
