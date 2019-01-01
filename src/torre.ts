@@ -18,8 +18,8 @@ export class Torre {
         this._$observador = _monstruos$.subscribe(m => this.observar(m));
     }
 
-    private _tipoAtaque: TipoAtaque;
-    private _rango: number;
+    private _tipoAtaque: TipoAtaque = new TipoAtaque(3, 5, 10);
+    private _rango: number = 3;
     private _$observador: Observer;
     private _objetivo: Monstruo;
     private _idIntervaloAtaque: number;
