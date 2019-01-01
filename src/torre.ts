@@ -42,10 +42,22 @@ export class Torre {
     }
 
     private comenzarAtaque() {
-        clearInterval(this._idIntervaloAtaque);
+        this.detenerAtaque();
 
         this._idIntervaloAtaque = setInterval(
-            () => this._objetivo.recibirDanio(this._tipoAtaque.fuerza),
+            () => this.atacarObjetivo(),
             this._tipoAtaque.cadenciaDeTiro)
+    }
+
+    private detenerAtaque() {
+        clearInterval(this._idIntervaloAtaque);
+    }
+
+    private atacarObjetivo() {
+        this._objetivo.recibirDanio(this._tipoAtaque.fuerza);
+
+        if (this._objetivo.vida <= 0) {
+            this.detenerAtaque();
+        }
     }
 }
