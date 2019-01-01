@@ -1,25 +1,40 @@
 import { Punto } from "./punto";
 
-class Monstruo {
+export class Monstruo {
     private _velocidad: number; //1 celda por ciclo
     private _vida: number;
-    private _posicion: Punto;
-    //camino
+    public get vida(): number {
+        return this._vida;
+    }
+    private _posicion: Punto; //posicion
+    public get posicion(): Punto {
+        return this._posicion;
+    }
+    private _camino: Punto[]; //secuencia de puntos ordenados que forman el camino
+    private _indicePosicion: number; //indice de posicion en el camino
 
-    constructor() {
+    constructor(velocidad: number, vida: number, camino: Punto[]) { //es necesario un método que cree caminos
+        this._velocidad = velocidad;
+        this._vida = vida;
+        this._camino = camino;
+        this._indicePosicion = 0;
+        this._posicion = this._camino[0];
+    }
+
+    mover() {
+        this._indicePosicion += this._velocidad;
+        this._posicion = this._camino[this._indicePosicion];
+    }
+
+    private morir() {
 
     }
 
-    mover() { //este es tu camino voh siguelo
-
-    }
-
-    morir() {
-
-    }
-
-    recibirDanio() {
-
+    recibirDanio(danio: number) {
+        this._vida -= danio;
+        if (this._vida <= 0) {
+            this.morir();
+        }
     }
 }
 

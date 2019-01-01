@@ -1,25 +1,18 @@
 import { Punto } from "./punto";
 import { Observable, Observer } from "./observable";
 import { Monstruo } from "./monstruo";
-
-class TipoAtaque {
-    constructor(
-        public fuerza: number,
-        public velocidadProyectil: number,
-        public cadenciaDeTiro: number
-    ) {}
-}
+import { TipoAtaque } from "./tipoAtaque";
 
 export class Torre {
     constructor(
         private _posicion: Punto, 
-        private _monstruos$: Observable<Monstruo[]>) 
+        private _monstruos$: Observable<Monstruo[]>,
+        private _rango: number,
+        private _tipoAtaque: TipoAtaque) 
     {
         this._$observador = _monstruos$.subscribe(m => this.observar(m));
     }
-
-    private _tipoAtaque: TipoAtaque;
-    private _rango: number;
+    
     private _$observador: Observer;
     private _objetivo: Monstruo;
     private _idIntervaloAtaque: number;
@@ -42,10 +35,22 @@ export class Torre {
     }
 
     private comenzarAtaque() {
-        clearInterval(this._idIntervaloAtaque);
+        this.detenerAtaque();
 
         this._idIntervaloAtaque = setInterval(
-            () => this._objetivo.recibirDanio(this._tipoAtaque.fuerza),
+            () => this.atacarObjetivo(),
             this._tipoAtaque.cadenciaDeTiro)
+    }
+
+    private detenerAtaque() {
+        clearInterval(this._idIntervaloAtaque);
+    }
+
+    private atacarObjetivo() {
+        this._objetivo.recibirDanio(this._tipoAtaque.fuerza);
+
+        if (this._objetivo.vida <= 0) {
+            this.detenerAtaque();
+        }
     }
 }
