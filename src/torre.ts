@@ -5,23 +5,14 @@ import { TipoAtaque } from "./tipoAtaque";
 
 export class Torre {
     constructor(
-        private _posicion: Punto, 
-        private _monstruos$: Observable<Monstruo[]>,
+        private _posicion: Punto,
         private _rango: number,
-        private _tipoAtaque: TipoAtaque) 
-    {
-        this._$observador = _monstruos$.subscribe(m => this.observar(m));
-    }
+        private _tipoAtaque: TipoAtaque) {}
     
-    private _$observador: Observer;
     private _objetivo: Monstruo;
     private _idIntervaloAtaque: number;
 
-    public eliminarTorre() {
-        this._monstruos$.unSubscribe(this._$observador);
-    }
-
-    private observar(monstruos: Monstruo[]) {
+    public observar(monstruos: Monstruo[]) {
         const enRango = (p: Punto) => 
             p.distancia(this._posicion) >= this._rango;
 
