@@ -1,14 +1,7 @@
 import { Punto } from "./punto";
 import { Observable, Observer } from "./observable";
 import { Monstruo } from "./monstruo";
-
-class TipoAtaque {
-    constructor(
-        public fuerza: number,
-        public velocidadProyectil: number,
-        public cadenciaDeTiro: number
-    ) {}
-}
+import { TipoAtaque } from "./tipoAtaque";
 
 export class Torre {
     constructor(
