@@ -13,13 +13,13 @@ class TipoAtaque {
 export class Torre {
     constructor(
         private _posicion: Punto, 
-        private _monstruos$: Observable<Monstruo[]>) 
+        private _monstruos$: Observable<Monstruo[]>,
+        private _rango: number,
+        private _tipoAtaque: TipoAtaque) 
     {
         this._$observador = _monstruos$.subscribe(m => this.observar(m));
     }
-
-    private _tipoAtaque: TipoAtaque = new TipoAtaque(3, 5, 10);
-    private _rango: number = 3;
+    
     private _$observador: Observer;
     private _objetivo: Monstruo;
     private _idIntervaloAtaque: number;
