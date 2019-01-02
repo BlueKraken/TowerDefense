@@ -27,7 +27,9 @@ export class Monstruo {
     }
 
     private morir() {
-
+        /*sugerencia:
+        no es necesario, el juego chequea la vida de los monstruos y los elimina del juego
+        */
     }
 
     recibirDanio(danio: number) {
