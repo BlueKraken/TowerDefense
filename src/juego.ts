@@ -58,8 +58,8 @@ class Juego {
         for (let row of this.mapa) {
 
             for (let col of row) {
-                if (col === '---') {
-                    document.write('T');
+                if (col === 0) {
+                    document.write('-');
                 } else {
                     document.write(' ');
                 }
