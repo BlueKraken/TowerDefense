@@ -89,12 +89,18 @@ class Juego {
 
             if (todosMuertos) {
                 clearInterval(idInterval);
-                this.oleada++;
-                this.comenzarOleada();
+                if (this.oleada < gameConfig.oleadas.length) {
+                    this.oleada++;
+                    this.comenzarOleada();
+                } else {
+                    this.terminarJuego()
+                }
             }
             
         }, gameConfig.intervalo);
     }
+
+    private terminarJuego() { console.log('JUEGO TERMINADO') };
 
     private notificarTorres() {
         this.torres.forEach(t => t.observar(this.monstruos));
