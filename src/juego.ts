@@ -42,14 +42,14 @@ let mapa3 = [
 
 //============JUEGO===================================
 class Juego {
-    private mapa:[][];
-    private camino:Punto[]; 
-    private monstruos:Monstruo[];
-    private torres:Torre[];
-    private oleada: number = 0;
+    private _mapa: number[][];
+    private _camino: Punto[]; 
+    private _monstruos: Monstruo[];
+    private _torres: Torre[];
+    private _oleada: number = 0;
 
-    constructor(map) {
-        this.mapa = map;
+    constructor(mapa: number[][]) {
+        this._mapa = mapa;
         this.init();
     }
 
@@ -68,29 +68,29 @@ class Juego {
     }
 
     private crearOleada() {
-        const datos = gameConfig.oleadas[this.oleada];
+        const datos = gameConfig.oleadas[this._oleada];
 
         for (let i = 0; i < datos.cantidad; i++) {
-            this.crearMonstruo(datos.velocidad, datos.vida, this.camino);            
+            this.crearMonstruo(datos.velocidad, datos.vida, this._camino);            
         }
     }
 
     private comenzarMovimiento() {
         let indiceMonstruo = 0;
         let idInterval = setInterval(() => {
-            if (indiceMonstruo < this.monstruos.length) {
-                this.monstruos[indiceMonstruo].comenzarMovimiento();
+            if (indiceMonstruo < this._monstruos.length) {
+                this._monstruos[indiceMonstruo].comenzarMovimiento();
                 indiceMonstruo++;
             }
             this.notificarTorres();
 
-            let todosMuertos = this.monstruos
+            let todosMuertos = this._monstruos
                 .reduce((acc, curr) => acc = acc && !curr.estaVivo, true);
 
             if (todosMuertos) {
                 clearInterval(idInterval);
-                if (this.oleada < gameConfig.oleadas.length) {
-                    this.oleada++;
+                if (this._oleada < gameConfig.oleadas.length) {
+                    this._oleada++;
                     this.comenzarOleada();
                 } else {
                     this.terminarJuego()
@@ -103,14 +103,14 @@ class Juego {
     private terminarJuego() { console.log('JUEGO TERMINADO') };
 
     private notificarTorres() {
-        this.torres.forEach(t => t.observar(this.monstruos));
+        this._torres.forEach(t => t.observar(this._monstruos));
     }
 
     private muestraMapa() {
         //Por implementar, dibujar monstruos y torres
         document.body.innerHTML = '';
         
-        for (let row of this.mapa) {
+        for (let row of this._mapa) {
 
             for (let col of row) {
                 if (col === 0) {
@@ -130,7 +130,7 @@ class Juego {
         puede haber un diseñador de mapas que no necesita 
         saber nada del resto del codigo */
 
-        this.camino = []; //Vacia el array, por si las moscas
+        this._camino = []; //Vacia el array, por si las moscas
         let x = -1;
         let y = -1;
         let previo = 0; /* se refiere al valor tipo number 
@@ -138,7 +138,7 @@ class Juego {
         mayores a 0 indican correspondencia a camino 
         y su indice */
 
-        for (let row of this.mapa) {
+        for (let row of this._mapa) {
             y++;
 
             for (let col of row) {
@@ -148,10 +148,10 @@ class Juego {
                     // ¿es != o !==?, digo por lo de === envez de ==.
 
                     if (col > previo) {
-                        this.camino.push(new Punto(x, y));
+                        this._camino.push(new Punto(x, y));
                     }
                     else if (col < previo) {
-                        this.camino.unshift(new Punto(x, y));
+                        this._camino.unshift(new Punto(x, y));
                     }
                     else {
                         return Error; /* ¿Que hace esto realmente? 
@@ -165,19 +165,11 @@ class Juego {
 
     private crearTorre(pos:Punto, rango:number, tipoAtaque:TipoAtaque) {
         let torre = new Torre(pos, rango, tipoAtaque);
-
-        this.torres.push(torre);
+        this._torres.push(torre);
     }
 
     private crearMonstruo(velocidad:number, vida:number, camino:Punto[]) {
         let monstruo = new Monstruo(velocidad, vida, camino);
-        this.monstruos.push(monstruo);
+        this._monstruos.push(monstruo);
     }
 }
-
-
-//Ejemplo:
-let juego = new Juego(mapa3);
-
-/* Despues de definir esta torre y monstruo inicial,
-¿como dejaria que el juego corra sin hacer un loop while? */
