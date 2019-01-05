@@ -16,7 +16,7 @@ export class Torre {
             p.distancia(this._posicion) >= this._rango;
 
         const objetivo = monstruos
-            .filter(m => m.vida > 0)
+            .filter(m => m.estaVivo)
             .find(m => enRango(m.posicion));
 
         this.cambiarObjetivo(objetivo);
