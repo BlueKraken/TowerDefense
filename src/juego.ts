@@ -2,6 +2,7 @@ import { Punto } from "./punto";
 import { Torre } from "./torre";
 import { Monstruo } from "./monstruo";
 import { TipoAtaque } from "./tipoAtaque";
+import { gameConfig } from "./config";
 
 //=======COLECCION DE MAPAS=========================
 // let mapa2 = [
@@ -41,17 +42,65 @@ let mapa3 = [
 
 //============JUEGO===================================
 class Juego {
-    mapa:[][];
-    camino:Punto[]; 
-    monstruos:Monstruo[];
-    torres:Torre[];
+    private mapa:[][];
+    private camino:Punto[]; 
+    private monstruos:Monstruo[];
+    private torres:Torre[];
+    private oleada: number = 0;
 
     constructor(map) {
         this.mapa = map;
-        this.leerCamino(); 
+        this.init();
     }
 
-    muestraMapa() {
+    private init() {
+        this.leerCamino();
+
+        this.crearTorre(new Punto(1, 0), 2, new TipoAtaque(3, 500));
+        this.crearTorre(new Punto(1, 1), 2, new TipoAtaque(3, 500));
+
+        this.comenzarOleada();
+    }
+
+    private comenzarOleada() {
+        this.crearOleada();
+        this.comenzarMovimiento();
+    }
+
+    private crearOleada() {
+        const datos = gameConfig.oleadas[this.oleada];
+
+        for (let i = 0; i < datos.cantidad; i++) {
+            this.crearMonstruo(datos.velocidad, datos.vida, this.camino);            
+        }
+    }
+
+    private comenzarMovimiento() {
+        let indiceMonstruo = 0;
+        let idInterval = setInterval(() => {
+            if (indiceMonstruo < this.monstruos.length) {
+                this.monstruos[indiceMonstruo].comenzarMovimiento();
+                indiceMonstruo++;
+            }
+            this.notificarTorres();
+
+            let todosMuertos = this.monstruos
+                .reduce((acc, curr) => acc = acc && !curr.estaVivo, true);
+
+            if (todosMuertos) {
+                clearInterval(idInterval);
+                this.oleada++;
+                this.comenzarOleada();
+            }
+            
+        }, gameConfig.intervalo);
+    }
+
+    private notificarTorres() {
+        this.torres.forEach(t => t.observar(this.monstruos));
+    }
+
+    private muestraMapa() {
         //Por implementar, dibujar monstruos y torres
         document.body.innerHTML = '';
         
@@ -108,15 +157,13 @@ class Juego {
         }
     }
 
-    creaTorre(pos:Punto, rango:number, tipoAtaque:TipoAtaque) {
-        let torre = new Torre(pos, rango, tipoAtaque); /* a torre no se 
-        le entregan los monstruos inicialmente, sino que cada vez que 
-        la torre quiera saber el estado actual de los monstruos */
+    private crearTorre(pos:Punto, rango:number, tipoAtaque:TipoAtaque) {
+        let torre = new Torre(pos, rango, tipoAtaque);
 
         this.torres.push(torre);
     }
 
-    creaMonstruo(velocidad:number, vida:number, camino:Punto[]) {
+    private crearMonstruo(velocidad:number, vida:number, camino:Punto[]) {
         let monstruo = new Monstruo(velocidad, vida, camino);
         this.monstruos.push(monstruo);
     }
@@ -125,8 +172,6 @@ class Juego {
 
 //Ejemplo:
 let juego = new Juego(mapa3);
-juego.creaTorre(new Punto(3, 2), 1, new TipoAtaque(1, 1));
-juego.creaMonstruo(1, 5, juego.camino);
 
 /* Despues de definir esta torre y monstruo inicial,
 ¿como dejaria que el juego corra sin hacer un loop while? */
