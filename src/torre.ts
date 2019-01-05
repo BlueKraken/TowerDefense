@@ -1,5 +1,4 @@
 import { Punto } from "./punto";
-import { Observable, Observer } from "./observable";
 import { Monstruo } from "./monstruo";
 import { TipoAtaque } from "./tipoAtaque";
 
@@ -16,12 +15,21 @@ export class Torre {
         const enRango = (p: Punto) => 
             p.distancia(this._posicion) >= this._rango;
 
-        const objetivo = monstruos.find(m => enRango(m.posicion));
+        const objetivo = monstruos
+            .filter(m => m.vida > 0)
+            .find(m => enRango(m.posicion));
+
         this.cambiarObjetivo(objetivo);
     }
 
     private cambiarObjetivo(nuevoObjetivo: Monstruo) {
         this._objetivo = nuevoObjetivo;
+
+        if (nuevoObjetivo == null) {
+            this.detenerAtaque();
+            return;
+        } 
+
         this.comenzarAtaque();
     }
 
