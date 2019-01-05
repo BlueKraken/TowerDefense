@@ -1,4 +1,5 @@
 import { Punto } from "./punto";
+import { gameConfig } from "./config";
 
 export class Monstruo {
     constructor (
@@ -11,42 +12,18 @@ export class Monstruo {
         this._posicion = this._camino[0];
     }
 
+    public get estaVivo(): boolean { return this.vida > 0 }
+
     public get vida(): number {
         return this._vida;
     }
-    private _posicion: Punto; //posicion
-    public get posicion(): Punto {
-        return this._posicion;
-    }
-    private _indicePosicion: number; //indice de posicion en el camino
-    private _idIntervaloMovimiento: number;
 
     public comenzarMovimiento() { /*Se llama desde juego*/
         clearInterval(this._idIntervaloMovimiento);
         this._idIntervaloMovimiento = setInterval(
             () => this.mover(),
-            1000 //1 fps
+            gameConfig.intervalo //1 fps
         )
-    }
-
-    private mover() {
-        this._indicePosicion += this._velocidad;
-        this._posicion = this._camino[this._indicePosicion];
-    }
-
-    private morir() {
-<<<<<<< HEAD
-        /*sugerencia:
-        no es necesario, el juego chequea la vida de los monstruos y los elimina del juego
-        */
-=======
-        clearInterval(this._idIntervaloMovimiento);
-        this._posicion = new Punto(-1, -1); /*Room of Doom
-                                            Sale de pantalla
-                                            Falta metodo de impresion
-                                            en pantalla.
-                                            Con observable supongo.*/
->>>>>>> monstruo
     }
 
     public recibirDanio(danio: number) { /*Se llama desde torre*/
@@ -54,6 +31,27 @@ export class Monstruo {
         if (this._vida <= 0) {
             this.morir();
         }
+    }
+
+    private _posicion: Punto; //posicion
+    public get posicion(): Punto {
+        return this._posicion;
+    }
+    private _indicePosicion: number; //indice de posicion en el camino
+    private _idIntervaloMovimiento: number;
+
+    private mover() {
+        this._indicePosicion += this._velocidad;
+        this._posicion = this._camino[this._indicePosicion];
+    }
+
+    private morir() {
+        clearInterval(this._idIntervaloMovimiento);
+        this._posicion = new Punto(-1, -1); /*Room of Doom
+                                            Sale de pantalla
+                                            Falta metodo de impresion
+                                            en pantalla.
+                                            Con observable supongo.*/
     }
 }
 
