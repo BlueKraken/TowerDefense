@@ -3,6 +3,7 @@ import { Torre } from "./torre";
 import { Monstruo } from "./monstruo";
 import { TipoAtaque } from "./tipoAtaque";
 import { gameConfig } from "./config";
+import { Escena } from "./escena";
 
 //=======COLECCION DE MAPAS=========================
 // let mapa2 = [
@@ -34,19 +35,16 @@ import { gameConfig } from "./config";
 //             ['S33','---','---','---','---','---'],
 //         ];
 
-let mapa3 = [
-                [1,2,3,4],
-                [0,0,0,5],
-                [9,8,7,6]
-]
+
 
 //============JUEGO===================================
-class Juego {
+export class Juego {
     private _mapa: number[][];
     private _camino: Punto[]; 
-    private _monstruos: Monstruo[];
-    private _torres: Torre[];
+    private _monstruos: Monstruo[] = [];
+    private _torres: Torre[] = [];
     private _oleada: number = 0;
+    private _escena: Escena = new Escena();
 
     constructor(mapa: number[][]) {
         this._mapa = mapa;
@@ -56,8 +54,8 @@ class Juego {
     private init() {
         this.leerCamino();
 
-        this.crearTorre(new Punto(1, 0), 2, new TipoAtaque(3, 500));
-        this.crearTorre(new Punto(1, 1), 2, new TipoAtaque(3, 500));
+        this.crearTorre(new Punto(1,2), 2, new TipoAtaque(3, 500));
+        this.crearTorre(new Punto(2,2), 2, new TipoAtaque(3, 500));
 
         this.comenzarOleada();
     }
@@ -166,6 +164,7 @@ class Juego {
     private crearTorre(pos:Punto, rango:number, tipoAtaque:TipoAtaque) {
         let torre = new Torre(pos, rango, tipoAtaque);
         this._torres.push(torre);
+        this._escena.dibujarTorre(torre);
     }
 
     private crearMonstruo(velocidad:number, vida:number, camino:Punto[]) {
