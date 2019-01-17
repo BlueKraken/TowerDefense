@@ -12,7 +12,6 @@ export class Escena {
     private get _context(): CanvasRenderingContext2D {
         return this._canvas.getContext("2d");
     }
-
     public dibujarCamino(camino: number[][]): void {
 
     }
@@ -22,7 +21,17 @@ export class Escena {
     }
  
     public dibujarTorre(torre: Torre): void {
+        const { left, top } = this.coordenadasAPosicion(torre.posicion); // Deconstrucción de objeto
 
+        this._context.moveTo(left, top);
+        this._context.beginPath();
+        this._context.arc(left, top, 10, 0, 2 * Math.PI);
+        this._context.stroke();
+        this._context.fillStyle = "red";
+        this._context.fill();
+
+        this._context.moveTo(left, top);
+        this._context.beginPath();
     }
 
     private coordenadasAPosicion(punto: Punto) {
