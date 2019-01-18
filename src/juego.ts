@@ -76,6 +76,9 @@ class Juego {
     }
 
     private comenzarMovimiento() {
+        /*¿Entonces, si entiendo bien, la idea es que esta 
+        función corresponde a una iteración del juego. En cada loop 
+        se corre una vez a comenzarMovimiento().?*/
         let indiceMonstruo = 0;
         let idInterval = setInterval(() => {
             if (indiceMonstruo < this._monstruos.length) {
@@ -98,15 +101,26 @@ class Juego {
             }
             
         }, gameConfig.intervalo);
+
+        /*Después de correr comenzarMovimiento esta aun chequea si 
+        murió un monstruo durante este segundo y, si ese es el caso, lo 
+        elimina del juego.*/
+        for (let monstruo of this._monstruos) {
+            if (monstruo.posicion === new Punto(-1, -1)) {
+                this.eliminarMonstruo(monstruo);
+            }
+        }
     }
 
-    private terminarJuego() { console.log('JUEGO TERMINADO') };
+    private terminarJuego() { 
+        console.log('JUEGO TERMINADO');
+    }
 
     private notificarTorres() {
         this._torres.forEach(t => t.observar(this._monstruos));
     }
 
-    private muestraMapa() {
+    private mostrarMapa() {
         //Por implementar, dibujar monstruos y torres
         document.body.innerHTML = '';
         
@@ -114,7 +128,7 @@ class Juego {
 
             for (let col of row) {
                 if (col === 0) {
-                    document.write('-');
+                    document.write('#');
                 } else {
                     document.write(' ');
                 }
@@ -168,8 +182,18 @@ class Juego {
         this._torres.push(torre);
     }
 
+    private eliminarTorre(torre:Torre) {
+        let index = this._torres.indexOf(torre);
+        this._torres.splice(index, 1);
+    }
+
     private crearMonstruo(velocidad:number, vida:number, camino:Punto[]) {
         let monstruo = new Monstruo(velocidad, vida, camino);
         this._monstruos.push(monstruo);
+    }
+
+    private eliminarMonstruo(monstruo:Monstruo) {
+        let index = this._monstruos.indexOf(monstruo);
+        this._monstruos.splice(index, 1);
     }
 }
