@@ -47,6 +47,7 @@ class Juego {
     private _monstruos: Monstruo[];
     private _torres: Torre[];
     private _oleada: number = 0;
+    private _vida: number;
 
     constructor(mapa: number[][]) {
         this._mapa = mapa;
@@ -86,6 +87,12 @@ class Juego {
 
             let todosMuertos = this._monstruos
                 .reduce((acc, curr) => acc = acc && !curr.estaVivo, true);
+            let danio = this._monstruos
+                .reduce((acc, curr) => {
+                    return curr.ataca? acc++: acc;
+                }, 0); /*cuantos monstruos atacaron,
+                        cada monstruo aplica 1 de danio*/
+            this.recibirDanio(danio);
 
             if (todosMuertos) {
                 clearInterval(idInterval);
@@ -93,14 +100,21 @@ class Juego {
                     this._oleada++;
                     this.comenzarOleada();
                 } else {
-                    this.terminarJuego()
+                    this.terminarJuego(true)
                 }
             }
             
         }, gameConfig.intervalo);
     }
 
-    private terminarJuego() { console.log('JUEGO TERMINADO') };
+    private recibirDanio(danio: number) {
+        this._vida -= danio;
+        if (this._vida <=0) {
+            this.terminarJuego(false);
+        }
+    }
+
+    private terminarJuego(victoria: boolean) { console.log('JUEGO TERMINADO') };
 
     private notificarTorres() {
         this._torres.forEach(t => t.observar(this._monstruos));
