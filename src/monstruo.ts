@@ -10,9 +10,10 @@ export class Monstruo {
     ) {
         this._indicePosicion = 0;
         this._posicion = this._camino[0];
+        this._ataca = false;
     }
 
-    public get estaVivo(): boolean { return this.vida > 0 }
+    public get estaVivo(): boolean { return this.vida > 0; }
 
     public get vida(): number {
         return this._vida;
@@ -23,7 +24,7 @@ export class Monstruo {
         this._idIntervaloMovimiento = setInterval(
             () => this.mover(),
             gameConfig.intervalo //1 fps
-        )
+        );
     }
 
     public recibirDanio(danio: number) { /*Se llama desde torre*/
@@ -37,11 +38,20 @@ export class Monstruo {
     public get posicion(): Punto {
         return this._posicion;
     }
+    private _ataca: boolean;
+    public get ataca(): boolean {
+        return this._ataca;
+    }
     private _indicePosicion: number; //indice de posicion en el camino
     private _idIntervaloMovimiento: number;
 
     private mover() {
         this._indicePosicion += this._velocidad;
+        if (this._indicePosicion >= this._camino.length) { //final del camino
+            this.morir();
+            this._ataca = true;
+            return;
+        }
         this._posicion = this._camino[this._indicePosicion];
     }
 
