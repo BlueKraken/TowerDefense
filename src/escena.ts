@@ -8,7 +8,9 @@ export class Escena {
     }
     
     public dibujarCamino(camino: number[][]): string[][] {
+        const parse: ToAscii = x => x == 0 ? '#' : ' ';
 
+        return camino.map(x => x.map(parse));
     }
 
     private dibujarTorres(tablero: string[][], torres: Torre[]): string[] {
@@ -23,3 +25,5 @@ export class Escena {
 
     }
 }
+
+type ToAscii = (x: number | string) => string
