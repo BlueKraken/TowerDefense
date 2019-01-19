@@ -13,8 +13,12 @@ export class Escena {
         return camino.map(x => x.map(parse));
     }
 
-    private dibujarTorres(tablero: string[][], torres: Torre[]): string[] {
+    private dibujarTorres(tablero: string[][], torres: Torre[]): string[][] {
+        const torreToAcci: ToAscii = x => 'T';
 
+        let nuevoTablero = [...tablero];
+
+        torres.forEach(t => nuevoTablero[]) nuevoTablero
     }
 
     private dibujarMonstruos(tablero: string[][], monstruos: Monstruo[]): string[] {
