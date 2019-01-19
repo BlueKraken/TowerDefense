@@ -1,24 +1,25 @@
 import { Monstruo } from "./monstruo";
 import { Torre } from "./torre";
-import { Punto } from "./punto";
 
 export class Escena {
-    public dibujarCamino(camino: number[][]): void {
+    public dibujarEscena(camino: number[][], monstruos: Monstruo[], torres: Torre[]) 
+    {
+
+    }
+    
+    public dibujarCamino(camino: number[][]): string[][] {
 
     }
 
-    public dibujarMonstruo(monstruo: Monstruo): void {
+    private dibujarTorres(tablero: string[][], torres: Torre[]): string[] {
 
     }
 
-    public dibujarTorre(torre: Torre): void {
+    private dibujarMonstruos(tablero: string[][], monstruos: Monstruo[]): string[] {
 
     }
 
-    private coordenadasAPosicion(punto: Punto) {
-        return {
-            left: punto.x * 10,
-            top: punto.y * 10
-        }
+    private imprimirEscena(tablero: string[][]): void {
+
     }
 }
