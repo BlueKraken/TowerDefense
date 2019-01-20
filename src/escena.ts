@@ -30,24 +30,30 @@ export class Escena {
     }
     
     private dibujarCamino(camino: number[][]): string[][] {
-        const parse: ToAscii = x => x == 0 ? '■' : ' ';
+        const parse: ToAscii<number> = x => x == 0 ? '■' : ' ';
 
         return camino.map(x => x.map(parse));
     }
 
     private dibujarTorres(tablero: string[][], torres: Torre[]): string[][] {
+        const parse: ToAscii<Torre> = t => 'T';
+
         let nuevoTablero = [...tablero];
         
-        torres.forEach(t => nuevoTablero[t.posicion.x][t.posicion.y] = 't');
+        torres.forEach(
+            t => nuevoTablero[t.posicion.x][t.posicion.y] = parse(t));
 
         return nuevoTablero;
     }
 
     private dibujarMonstruos(tablero: string[][], monstruos: Monstruo[]): string[][] {
+        const parse: ToAscii<Monstruo> = m => m.vida.toString();
+        
         let nuevoTablero = [...tablero];
 
         monstruos.forEach(
-            m => nuevoTablero[m.posicion.x][m.posicion.y] = m.vida.toString()); // justo 80 owo
+            m => nuevoTablero[m.posicion.x][m.posicion.y] = parse(m));
+
         return nuevoTablero;
     }
 
@@ -59,4 +65,4 @@ export class Escena {
     }
 }
 
-type ToAscii = (x: number | string) => string
+type ToAscii<T> = (x: T) => string
