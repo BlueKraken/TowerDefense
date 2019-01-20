@@ -24,7 +24,7 @@ for (let i = 0; i < camino.length; i++) {
     }
 }
 
-const torre = new Torre(new Punto(2,2), 3, new TipoAtaque(5, 444));
+const torre = new Torre(new Punto(1,1), 3, new TipoAtaque(5, 444));
 
 const monstruo = new Monstruo(4, 4, caminoDePuntos);
 
