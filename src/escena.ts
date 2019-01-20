@@ -10,10 +10,8 @@ export class Escena {
         this._contenedor.style.whiteSpace = 'pre';
         this._contenedor.style.fontFamily = 'monospace';
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.body.innerHTML = '';
-            document.body.append(this._contenedor);
-        });
+        document.body.innerHTML = '';
+        document.body.append(this._contenedor);
     }
 
     private _contenedor: HTMLDivElement;
@@ -41,7 +39,13 @@ export class Escena {
         let nuevoTablero = [...tablero];
         
         torres.forEach(
-            t => nuevoTablero[t.posicion.x][t.posicion.y] = parse(t));
+            t => {
+                try {
+                    nuevoTablero[t.posicion.x][t.posicion.y] = parse(t)
+                } catch {
+                    console.warn('torre no pudo ser dibujada', t)   
+                }
+            });
 
         return nuevoTablero;
     }
@@ -52,16 +56,23 @@ export class Escena {
         let nuevoTablero = [...tablero];
 
         monstruos.forEach(
-            m => nuevoTablero[m.posicion.x][m.posicion.y] = parse(m));
+            m => {
+                try {
+                    nuevoTablero[m.posicion.x][m.posicion.y] = parse(m)
+                } catch {
+                    console.warn('monstruo no pudo ser dibujado', m);
+                } 
+            });
 
         return nuevoTablero;
     }
 
     private imprimirEscena(tablero: string[][]): void {
-        document.addEventListener('DOMContentLoaded', () => {
-            this._contenedor.innerText = tablero.map(
-                fila => fila.join('')).join('\n');
-        });
+        this._contenedor.innerText = tablero.map(
+            fila => fila.join('')).join('\n');
+
+        console.log(tablero.map(
+            fila => fila.join('')).join('\n'))
     }
 }
 
