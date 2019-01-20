@@ -2,6 +2,7 @@ var path = require('path');
 
 module.exports = {
     entry: './src/main.ts',
+    devtool: 'eval-source-map',
     module: {
         rules: [
             {
