@@ -3,6 +3,7 @@ import { Torre } from "./torre";
 import { Monstruo } from "./monstruo";
 import { TipoAtaque } from "./tipoAtaque";
 import { gameConfig } from "./config";
+import { Escena } from "./escena";
 
 //=======COLECCION DE MAPAS=========================
 // let mapa2 = [
@@ -41,23 +42,29 @@ let mapa3 = [
 ]
 
 //============JUEGO===================================
-class Juego {
+export class Juego {
     private _mapa: number[][];
     private _camino: Punto[]; 
     private _monstruos: Monstruo[];
     private _torres: Torre[];
     private _oleada: number = 0;
     private _vida: number;
+    private _escena: Escena;
 
     constructor(mapa: number[][]) {
+        this._torres = [];
+        this._monstruos = [];
+        this._camino = [];
+        this._vida = gameConfig.vidaJugador;
         this._mapa = mapa;
         this.init();
+        this._escena = new Escena();
     }
 
     private init() {
         this.leerCamino();
 
-        this.crearTorre(new Punto(1, 0), 2, new TipoAtaque(3, 500));
+        //this.crearTorre(new Punto(1, 0), 2, new TipoAtaque(3, 500));
         this.crearTorre(new Punto(1, 1), 2, new TipoAtaque(3, 500));
 
         this.comenzarOleada();
@@ -103,6 +110,11 @@ class Juego {
                     this.terminarJuego(true)
                 }
             }
+
+            this._escena.dibujarEscena(this._mapa,this._monstruos, this._torres);
+            console.log(this._vida.toString());
+            console.log(this._camino);
+            
             
         }, gameConfig.intervalo);
     }
@@ -138,11 +150,28 @@ class Juego {
         }       
     }
 
-    private leerCamino() { 
+    private leerCamino() {
+
+        let x = 0;
+        let y = 0;
+
+        for (let row of this._mapa) {
+            for (let col of row) {
+                
+                if (col == (this._camino.length + 1)) {
+                    this._camino.push(new Punto(x, y));
+                    this.leerCamino();
+                }
+                x++;
+            }
+            y++;
+            x = 0;
+        }
+
         /* mira el mapa y ve cual es el camino, asi podemos tener 
         una coleccion de mapas y solo cambiar de mapa, y asi 
         puede haber un diseñador de mapas que no necesita 
-        saber nada del resto del codigo */
+        saber nada del resto del codigo 
 
         this._camino = []; //Vacia el array, por si las moscas
         let x = -1;
@@ -150,7 +179,7 @@ class Juego {
         let previo = 0; /* se refiere al valor tipo number 
         contenido en la casilla anterior. Los numeros 
         mayores a 0 indican correspondencia a camino 
-        y su indice */
+        y su indice 
 
         for (let row of this._mapa) {
             y++;
@@ -170,11 +199,11 @@ class Juego {
                     else {
                         return Error; /* ¿Que hace esto realmente? 
                         Mi intencion es que simplemente avise que algo 
-                        esta mal para que lo revisemos */
+                        esta mal para que lo revisemos 
                     }
                 }
             }
-        }
+        }*/
     }
 
     private crearTorre(pos:Punto, rango:number, tipoAtaque:TipoAtaque) {
