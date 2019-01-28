@@ -12,25 +12,27 @@ export class Escena {
 
         document.body.innerHTML = '';
         document.body.append(this._contenedor);
+        
     }
 
     private _contenedor: HTMLDivElement;
     
-    public dibujarEscena(camino: number[][], monstruos: Monstruo[], torres: Torre[]) 
+    public dibujarEscena(mapa: number[][], monstruos: Monstruo[], torres: Torre[]) 
     {
-        let tablero = this.dibujarCamino(camino);
+        let tablero = this.dibujarCamino(mapa);
 
         tablero = this.dibujarMonstruos(tablero, monstruos);
 
         tablero = this.dibujarTorres(tablero, torres);
 
         this.imprimirEscena(tablero);
+        
     }
     
-    private dibujarCamino(camino: number[][]): string[][] {
+    private dibujarCamino(mapa: number[][]): string[][] {
         const parse: ToAscii<number> = x => x == 0 ? '■' : ' ';
 
-        return camino.map(x => x.map(parse));
+        return mapa.map(x => x.map(parse));
     }
 
     private dibujarTorres(tablero: string[][], torres: Torre[]): string[][] {
@@ -41,7 +43,7 @@ export class Escena {
         torres.forEach(
             t => {
                 try {
-                    nuevoTablero[t.posicion.x][t.posicion.y] = parse(t)
+                    nuevoTablero[t.posicion.y][t.posicion.x] = parse(t)
                 } catch {
                     console.warn('torre no pudo ser dibujada', t)   
                 }
@@ -58,7 +60,7 @@ export class Escena {
         monstruos.forEach(
             m => {
                 try {
-                    nuevoTablero[m.posicion.x][m.posicion.y] = parse(m)
+                    nuevoTablero[m.posicion.y][m.posicion.x] = parse(m)
                 } catch {
                     console.warn('monstruo no pudo ser dibujado', m);
                 } 
@@ -72,8 +74,8 @@ export class Escena {
             fila => fila.join('')).join('\n');
 
         console.log(tablero.map(
-            fila => fila.join('')).join('\n'))
+            fila => fila.join('')).join('\n'));
     }
 }
 
-type ToAscii<T> = (x: T) => string
+type ToAscii<T> = (x: T) => string;
