@@ -1,5 +1,5 @@
 export const gameConfig = {
-    intervalo: 500,
+    intervalo: 1000,
     oleadas: [
         { velocidad: 1, vida: 7, cantidad: 10 },
         { velocidad: 1, vida: 9, cantidad: 12 }
