@@ -1,24 +1,21 @@
-import { Escena } from "./escena";
-import { Torre } from "./torre";
-import { Punto } from "./punto";
-import { TipoAtaque } from "./tipoAtaque";
-import { Monstruo } from "./monstruo";
 import { Juego } from "./juego";
+import a from 'sweetalert';
 
 
+a('eeee');
 
 /*const e = new Escena();
 
 (window as any).escena = e;
 
 */
-const mapa = [
-    [1,2,3,4],
-    [0,0,0,5],
-    [9,8,7,6]
-];
+// const mapa = [
+//     [1,2,3,4],
+//     [0,0,0,5],
+//     [9,8,7,6]
+// ];
 
-let juego = new Juego(mapa);
+// let juego = new Juego(mapa);
 
 /*
 const caminoDePuntos = [];
