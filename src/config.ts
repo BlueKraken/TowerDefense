@@ -1,9 +1,10 @@
 export const gameConfig = {
     intervalo: 1000,
     oleadas: [
-        { velocidad: 2, vida: 7, cantidad: 10 },
-        { velocidad: 3, vida: 9, cantidad: 12 }
-    ] as Oleada[]
+        { velocidad: 1, vida: 7, cantidad: 10 },
+        { velocidad: 1, vida: 9, cantidad: 12 }
+    ] as Oleada[],
+    vidaJugador: 10
 }
 
 interface Oleada {

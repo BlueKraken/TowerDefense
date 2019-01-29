@@ -11,6 +11,8 @@ export class Torre {
     private _objetivo: Monstruo;
     private _idIntervaloAtaque: number;
 
+    public get posicion(): Punto { return this._posicion; }
+
     public observar(monstruos: Monstruo[]) {
         const enRango = (p: Punto) => 
             p.distancia(this._posicion) >= this._rango;
@@ -46,10 +48,10 @@ export class Torre {
     }
 
     private atacarObjetivo() {
-        this._objetivo.recibirDanio(this._tipoAtaque.fuerza);
-
         if (this._objetivo.vida <= 0) {
             this.detenerAtaque();
         }
+        
+        this._objetivo.recibirDanio(this._tipoAtaque.fuerza);
     }
 }
