@@ -72,9 +72,6 @@ export class Escena {
     private imprimirEscena(tablero: string[][]): void {
         this._contenedor.innerText = tablero.map(
             fila => fila.join('')).join('\n');
-
-        console.log(tablero.map(
-            fila => fila.join('')).join('\n'));
     }
 }
 
