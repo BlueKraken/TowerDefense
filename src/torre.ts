@@ -48,10 +48,10 @@ export class Torre {
     }
 
     private atacarObjetivo() {
-        this._objetivo.recibirDanio(this._tipoAtaque.fuerza);
-
         if (this._objetivo.vida <= 0) {
             this.detenerAtaque();
         }
+        
+        this._objetivo.recibirDanio(this._tipoAtaque.fuerza);
     }
 }
