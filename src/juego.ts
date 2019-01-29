@@ -63,12 +63,13 @@ export class Juego {
 
             this.notificarTorres();
 
-            let danio = this._monstruos
-                .reduce((acc, curr) => {
-                    return curr.ataca? acc++: acc;
-                }, 0);
-
-            this.perderVida(danio);
+            this._monstruos.forEach((m, i, a) => {
+                if (m.vida > 0 && m.posicion.equals(new Punto(-1, -1))) {
+                    // quitar vida al jugador y matar monstruo
+                    a[i].recibirDanio(999);
+                    this.perderVida(1);
+                }
+            });
 
             if (this._monstruosVivos.length == 0) {
                 clearInterval(idInterval);
