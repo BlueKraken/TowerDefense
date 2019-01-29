@@ -114,21 +114,16 @@ export class Juego {
                 }
             }
 
-            this._escena.dibujarEscena(this._mapa,this._monstruos, this._torres);
+            for (let monstruo of this._monstruos) {
+                if (monstruo.posicion.equals(new Punto(-1, -1))) {
+                    this.eliminarMonstruo(monstruo);
+                }
+            }
+
+            this._escena.dibujarEscena(this._mapa, this._monstruos, this._torres);
             console.log(this._vida.toString());
-            console.log(this._camino);
-            
             
         }, gameConfig.intervalo);
-
-        /*Después de correr comenzarMovimiento esta aun chequea si 
-        murió un monstruo durante este segundo y, si ese es el caso, lo 
-        elimina del juego.*/
-        for (let monstruo of this._monstruos) {
-            if (monstruo.posicion === new Punto(-1, -1)) {
-                this.eliminarMonstruo(monstruo);
-            }
-        }
     }
 
     private perderVida(danio: number) {
@@ -234,6 +229,7 @@ export class Juego {
     }
 
     private eliminarMonstruo(monstruo:Monstruo) {
+        console.log('eliminando monstruo', monstruo);
         let index = this._monstruos.indexOf(monstruo);
         this._monstruos.splice(index, 1);
     }
