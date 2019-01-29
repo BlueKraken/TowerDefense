@@ -99,7 +99,7 @@ export class Juego {
                     return curr.ataca? acc++: acc;
                 }, 0); /*cuantos monstruos atacaron,
                         cada monstruo aplica 1 de danio*/
-            this.recibirDanio(danio);
+            this.perderVida(danio);
 
             if (todosMuertos) {
                 clearInterval(idInterval);
@@ -119,7 +119,7 @@ export class Juego {
         }, gameConfig.intervalo);
     }
 
-    private recibirDanio(danio: number) {
+    private perderVida(danio: number) {
         this._vida -= danio;
         if (this._vida <=0) {
             this.terminarJuego(false);
