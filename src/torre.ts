@@ -48,6 +48,7 @@ export class Torre {
     }
 
     private atacarObjetivo() {
+        console.log('atacando');
         if (this._objetivo.vida <= 0) {
             this.detenerAtaque();
         }

@@ -24,6 +24,10 @@ export class Juego {
         this._escena = new Escena();
     }
 
+    private get _monstruosVivos() {
+        return this._monstruos.filter(m => m.vida > 0);
+    }
+
     private init() {
         this.leerCamino();
 
@@ -41,6 +45,8 @@ export class Juego {
     private crearOleada() {
         const datos = gameConfig.oleadas[this._oleada];
 
+        this._monstruos = [];
+
         for (let i = 0; i < datos.cantidad; i++) {
             this.crearMonstruo(datos.velocidad, datos.vida, this._camino);            
         }
@@ -48,15 +54,14 @@ export class Juego {
 
     private comenzarMovimiento() {
         let indiceMonstruo = 0;
+
         let idInterval = setInterval(() => {
             if (indiceMonstruo < this._monstruos.length) {
                 this._monstruos[indiceMonstruo].comenzarMovimiento();
                 indiceMonstruo++;
             }
-            this.notificarTorres();
 
-            let todosMuertos = this._monstruos
-                .reduce((acc, curr) => acc = acc && !curr.estaVivo, true);
+            this.notificarTorres();
 
             let danio = this._monstruos
                 .reduce((acc, curr) => {
@@ -65,25 +70,21 @@ export class Juego {
 
             this.perderVida(danio);
 
-            if (todosMuertos) {
+            if (this._monstruosVivos.length == 0) {
                 clearInterval(idInterval);
+                
                 if (this._oleada < gameConfig.oleadas.length) {
                     this._oleada++;
                     this.comenzarOleada();
+                
                 } else {
                     this.terminarJuego(true)
                 }
             }
 
-            for (let monstruo of this._monstruos) {
-                if (monstruo.posicion.equals(new Punto(-1, -1))) {
-                    this.eliminarMonstruo(monstruo);
-                }
-            }
-
-            this._escena.dibujarEscena(this._mapa, this._monstruos, this._torres);
-            console.log(this._vida.toString());
+            this._escena.dibujarEscena(this._mapa, this._monstruosVivos, this._torres);
             
+            console.log(this._vida.toString());
         }, gameConfig.intervalo);
     }
 
@@ -97,7 +98,7 @@ export class Juego {
     private terminarJuego(victoria: boolean) { console.log('JUEGO TERMINADO') };
 
     private notificarTorres() {
-        this._torres.forEach(t => t.observar(this._monstruos));
+        this._torres.forEach(t => t.observar(this._monstruosVivos));
     }
 
     private mostrarMapa() {
@@ -150,10 +151,5 @@ export class Juego {
     private crearMonstruo(velocidad:number, vida:number, camino:Punto[]) {
         let monstruo = new Monstruo(velocidad, vida, camino);
         this._monstruos.push(monstruo);
-    }
-
-    private eliminarMonstruo(monstruo:Monstruo) {
-        let index = this._monstruos.indexOf(monstruo);
-        this._monstruos.splice(index, 1);
     }
 }
