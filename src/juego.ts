@@ -4,6 +4,8 @@ import { Monstruo } from "./monstruo";
 import { TipoAtaque } from "./tipoAtaque";
 import { gameConfig } from "./config";
 import { Escena } from "./escena";
+import swal from "sweetalert";
+
 
 export class Juego {
     private _mapa: number[][];
@@ -93,6 +95,7 @@ export class Juego {
         this._vida -= danio;
         if (this._vida <=0) {
             this.terminarJuego(false);
+            this.perderJuego();
         }
     }
 
@@ -153,4 +156,17 @@ export class Juego {
         let monstruo = new Monstruo(velocidad, vida, camino);
         this._monstruos.push(monstruo);
     }
+
+    private ganarJuego(){ swal("Good job!", "Has ganado", "success", {
+       // button: "Cerrar",
+        timer:3000,
+      });
+    };
+      private perderJuego(){ swal("Bad job!", "Has Perdido", "error", {
+       // button: "Cerrar", 
+       timer:3000,
+      });
+    };
+
+      
 }
