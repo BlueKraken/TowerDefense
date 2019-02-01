@@ -6,14 +6,20 @@ export class Torre {
     constructor(
         private _posicion: Punto,
         private _rango: number,
-        private _tipoAtaque: TipoAtaque) {}
+        private _tipoAtaque: TipoAtaque) {
+            this._atacando = false;
+        }
     
     private _objetivo: Monstruo;
     private _idIntervaloAtaque: number;
+    private _atacando: boolean;
 
     public get posicion(): Punto { return this._posicion; }
 
     public observar(monstruos: Monstruo[]) {
+        if (this._atacando) {
+            return;
+        }
         const enRango = (p: Punto) => 
             p.distancia(this._posicion) <= this._rango;
 
@@ -37,6 +43,7 @@ export class Torre {
 
     private comenzarAtaque() {
         this.detenerAtaque();
+        this._atacando = true;
 
         this._idIntervaloAtaque = setInterval(
             () => this.atacarObjetivo(),
@@ -44,6 +51,7 @@ export class Torre {
     }
 
     private detenerAtaque() {
+        this._atacando = false;
         clearInterval(this._idIntervaloAtaque);
     }
 
