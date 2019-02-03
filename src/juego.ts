@@ -48,7 +48,7 @@ export class Juego {
         this._monstruos = [];
 
         for (let i = 0; i < datos.cantidad; i++) {
-            this.crearMonstruo(datos.velocidad, datos.vida, this._camino);            
+            this.crearMonstruo(datos.velocidad, datos.vida, this._camino, datos.ataque);            
         }
     }
 
@@ -66,8 +66,8 @@ export class Juego {
             this._monstruos.forEach((m, i, a) => {
                 if (m.vida > 0 && m.posicion.equals(new Punto(-1, -1))) {
                     // quitar vida al jugador y matar monstruo
+                    this.perderVida(m.ataque);
                     a[i].recibirDanio(999);
-                    this.perderVida(1);
                 }
             });
 
@@ -149,8 +149,8 @@ export class Juego {
         this._torres.splice(index, 1);
     }
 
-    private crearMonstruo(velocidad:number, vida:number, camino:Punto[]) {
-        let monstruo = new Monstruo(velocidad, vida, camino);
+    private crearMonstruo(velocidad:number, vida:number, camino:Punto[], ataque: number) {
+        let monstruo = new Monstruo(velocidad, vida, camino, ataque);
         this._monstruos.push(monstruo);
     }
 }

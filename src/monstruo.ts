@@ -5,11 +5,16 @@ export class Monstruo {
     constructor (
         private _velocidad: number, //celdas por frame
         private _vida: number,
-        private _camino: Punto[] /*secuencia de puntos ordenados
+        private _camino: Punto[], /*secuencia de puntos ordenados
                                     que forman el camino*/
+        private _ataque: number
     ) {
         this._indicePosicion = 0;
         this._posicion = this._camino[0];
+    }
+
+    public get ataque(): number {
+        return this._ataque;
     }
 
     public get estaVivo(): boolean { return this.vida > 0; }
