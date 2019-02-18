@@ -15,7 +15,7 @@ export class Torre {
 
     public observar(monstruos: Monstruo[]) {
         const enRango = (p: Punto) => 
-            p.distancia(this._posicion) >= this._rango;
+            p.distancia(this._posicion) <= this._rango;
 
         const objetivo = monstruos
             .filter(m => m.estaVivo)
@@ -48,6 +48,7 @@ export class Torre {
     }
 
     private atacarObjetivo() {
+        console.log('atacando');
         if (this._objetivo.vida <= 0) {
             this.detenerAtaque();
         }

@@ -3,45 +3,7 @@ import { Torre } from "./torre";
 import { Monstruo } from "./monstruo";
 import { TipoAtaque } from "./tipoAtaque";
 import { gameConfig } from "./config";
-import { Escena } from "./escena";
 
-//=======COLECCION DE MAPAS=========================
-// let mapa2 = [
-//             ['S','-','S','-','-','-','-','-','-','-','-','-','-','S','-','-','-']
-//            ,['S','-','S','S','S','S','-','-','-','-','-','-','-','S','-','-','-']
-//            ,['S','-','-','-','-','S','S','-','-','-','-','-','S','S','S','S','-']
-//            ,['S','S','S','S','-','-','S','-','-','-','-','-','S','-','-','S','-']
-//            ,['-','-','-','S','S','S','S','-','-','-','-','-','S','-','-','S','-']
-//            ,['-','-','-','-','-','-','S','S','S','S','S','S','S','-','-','S','-']
-//            ,['-','S','S','S','S','-','-','-','S','-','-','-','-','-','S','S','-']
-//            ,['-','S','-','-','S','-','-','-','S','-','-','-','-','S','S','-','-']
-//            ,['-','S','-','-','S','S','-','-','S','-','-','-','S','S','-','-','-']
-//            ,['-','S','-','-','-','S','-','-','S','S','S','S','S','-','-','-','-']
-//            ,['-','S','-','-','-','S','S','S','S','-','-','-','-','-','-','-','-']
-//         ];
-
-// let mapa1 = [
-//             ['S01','---','---','---','---','---'],
-//             ['S02','S03','S04','S05','S06','S07'],
-//             ['---','---','---','---','---','S08'],
-//             ['S15','S14','S12','S11','S10','S09'],
-//             ['S16','---','---','---','---','---'],
-//             ['S17','---','---','---','---','---'],
-//             ['S18','S19','S20','S21','S22','S23'],
-//             ['---','---','---','---','---','S24'],
-//             ['---','---','---','---','---','S25'],
-//             ['---','---','---','---','---','S26'],
-//             ['S32','S31','S30','S29','S28','S27'],
-//             ['S33','---','---','---','---','---'],
-//         ];
-
-let mapa3 = [
-                [1,2,3,4],
-                [0,0,0,5],
-                [9,8,7,6]
-]
-
-//============JUEGO===================================
 export class Juego {
     private _mapa: number[][];
     private _camino: Punto[]; 
@@ -49,7 +11,7 @@ export class Juego {
     private _torres: Torre[];
     private _oleada: number = 0;
     private _vida: number;
-    private _escena: Escena;
+    private escena: String[][];
 
     constructor(mapa: number[][]) {
         this._torres = [];
@@ -58,14 +20,22 @@ export class Juego {
         this._vida = gameConfig.vidaJugador;
         this._mapa = mapa;
         this.init();
-        this._escena = new Escena();
+    }
+
+    private get _monstruosVivos() {
+        for (let m of this._monstruos) {
+            if (m.vida > 0) {
+                return m;
+            }
+        }
     }
 
     private init() {
         this.leerCamino();
 
-        //this.crearTorre(new Punto(1, 0), 2, new TipoAtaque(3, 500));
-        this.crearTorre(new Punto(1, 1), 2, new TipoAtaque(3, 500));
+        this.crearTorre(new Punto(2, 1), 2, new TipoAtaque(1, 500));
+        this.crearTorre(new Punto(1, 3), 2, new TipoAtaque(1, 500));
+        this.crearTorre(new Punto(2, 5), 2, new TipoAtaque(1, 500));
 
         this.comenzarOleada();
     }
@@ -78,51 +48,45 @@ export class Juego {
     private crearOleada() {
         const datos = gameConfig.oleadas[this._oleada];
 
+        this._monstruos = [];
+
         for (let i = 0; i < datos.cantidad; i++) {
             this.crearMonstruo(datos.velocidad, datos.vida, this._camino);            
         }
     }
 
     private comenzarMovimiento() {
-        /*¿Entonces, si entiendo bien, la idea es que esta 
-        función corresponde a una iteración del juego. En cada loop 
-        se corre una vez a comenzarMovimiento().?*/
         let indiceMonstruo = 0;
+
         let idInterval = setInterval(() => {
             if (indiceMonstruo < this._monstruos.length) {
                 this._monstruos[indiceMonstruo].comenzarMovimiento();
                 indiceMonstruo++;
             }
+
             this.notificarTorres();
 
-            let todosMuertos = this._monstruos
-                .reduce((acc, curr) => acc = acc && !curr.estaVivo, true);
-            let danio = this._monstruos
-                .reduce((acc, curr) => {
-                    return curr.ataca? acc++: acc;
-                }, 0); /*cuantos monstruos atacaron,
-                        cada monstruo aplica 1 de danio*/
-            this.perderVida(danio);
+            this._monstruos.forEach((m, i, a) => {
+                if (m.vida > 0 && m.posicion.equals(new Punto(-1, -1))) {
+                    // quitar vida al jugador y matar monstruo
+                    a[i].recibirDanio(999);
+                    this.perderVida(1);
+                }
+            });
 
-            if (todosMuertos) {
+            if (this._monstruosVivos.length == 0) {
                 clearInterval(idInterval);
+                
                 if (this._oleada < gameConfig.oleadas.length) {
                     this._oleada++;
                     this.comenzarOleada();
+                
                 } else {
                     this.terminarJuego(true)
                 }
             }
 
-            for (let monstruo of this._monstruos) {
-                if (monstruo.posicion.equals(new Punto(-1, -1))) {
-                    this.eliminarMonstruo(monstruo);
-                }
-            }
-
-            this._escena.dibujarEscena(this._mapa, this._monstruos, this._torres);
-            console.log(this._vida.toString());
-            
+            this.mostrarEscena();
         }, gameConfig.intervalo);
     }
 
@@ -136,25 +100,61 @@ export class Juego {
     private terminarJuego(victoria: boolean) { console.log('JUEGO TERMINADO') };
 
     private notificarTorres() {
-        this._torres.forEach(t => t.observar(this._monstruos));
+        this._torres.forEach(t => t.observar(this._monstruosVivos));
     }
 
-    private mostrarMapa() {
+    private crearEscena() {/*
+        Generacion de una tabla con strings y por lo tanto printeable, la cual 
+        corresponde a la escena o tablero completo actualizado.*/
+
+        let map_rows = this._mapa.length;
+        let map_cols = this._mapa[0].length;
+
+        //Crea formato de la escena
+        for (let i = 0; i < map_rows; i++) {
+            this.escena.push([]);
+        }
+
+        //crea una linea base
+        let void_row = [];
+        for (let i = 0; i < map_cols; i++) {
+            void_row.push('#');
+        }
+
+        //dibuja todas las lineas base
+        for (let row of this._mapa) {
+            row = void_row; 
+        }
+
+        //sobre dibuja camino
+        for (let posElement of this._camino) {
+            this.escena[posElement.x][posElement.y] = ' ';
+        }
+
+        //sobre dibuja monstruos
+        for (let m of this._monstruos) {
+            this.escena[m.posicion.x][m.posicion.y] = String(m.vida);
+        }
+
+        //sobre dibuja torres
+        for (let t of this._torres) {
+            this.escena[t.posicion.x][t.posicion.y] = 'T';
+        }
+    }
+
+    private mostrarEscena() {
         //Por implementar, dibujar monstruos y torres
         document.body.innerHTML = '';
         
-        for (let row of this._mapa) {
+        for (let row of this.escena) {
 
             for (let col of row) {
-                if (col === 0) {
-                    document.write('#');
-                } else {
-                    document.write(' ');
+                document.write(col);
                 }
             }
 
             document.write("<br />");
-        }       
+        }     
     }
 
     private leerCamino() {
@@ -174,43 +174,6 @@ export class Juego {
             y++;
             x = 0;
         }
-
-        /* mira el mapa y ve cual es el camino, asi podemos tener 
-        una coleccion de mapas y solo cambiar de mapa, y asi 
-        puede haber un diseñador de mapas que no necesita 
-        saber nada del resto del codigo 
-
-        this._camino = []; //Vacia el array, por si las moscas
-        let x = -1;
-        let y = -1;
-        let previo = 0; /* se refiere al valor tipo number 
-        contenido en la casilla anterior. Los numeros 
-        mayores a 0 indican correspondencia a camino 
-        y su indice 
-
-        for (let row of this._mapa) {
-            y++;
-
-            for (let col of row) {
-                x++;
-
-                if (col != 0) { 
-                    // ¿es != o !==?, digo por lo de === envez de ==.
-
-                    if (col > previo) {
-                        this._camino.push(new Punto(x, y));
-                    }
-                    else if (col < previo) {
-                        this._camino.unshift(new Punto(x, y));
-                    }
-                    else {
-                        return Error; /* ¿Que hace esto realmente? 
-                        Mi intencion es que simplemente avise que algo 
-                        esta mal para que lo revisemos 
-                    }
-                }
-            }
-        }*/
     }
 
     private crearTorre(pos:Punto, rango:number, tipoAtaque:TipoAtaque) {
@@ -226,11 +189,5 @@ export class Juego {
     private crearMonstruo(velocidad:number, vida:number, camino:Punto[]) {
         let monstruo = new Monstruo(velocidad, vida, camino);
         this._monstruos.push(monstruo);
-    }
-
-    private eliminarMonstruo(monstruo:Monstruo) {
-        console.log('eliminando monstruo', monstruo);
-        let index = this._monstruos.indexOf(monstruo);
-        this._monstruos.splice(index, 1);
     }
 }

@@ -17,7 +17,7 @@ export class Escena {
 
     private _contenedor: HTMLDivElement;
     
-    public dibujarEscena(mapa: number[][], monstruos: Monstruo[], torres: Torre[]) 
+    public dibujarEscena(mapa: number[][], monstruos: Monstruo[], torres: Torre[], vida: number) 
     {
         let tablero = this.dibujarCamino(mapa);
 
@@ -25,8 +25,7 @@ export class Escena {
 
         tablero = this.dibujarTorres(tablero, torres);
 
-        this.imprimirEscena(tablero);
-        
+        this.imprimirEscena(tablero, vida);
     }
     
     private dibujarCamino(mapa: number[][]): string[][] {
@@ -69,12 +68,10 @@ export class Escena {
         return nuevoTablero;
     }
 
-    private imprimirEscena(tablero: string[][]): void {
+    private imprimirEscena(tablero: string[][], vida:number): void {
         this._contenedor.innerText = tablero.map(
             fila => fila.join('')).join('\n');
-
-        console.log(tablero.map(
-            fila => fila.join('')).join('\n'));
+            // document.write("Vida: ", String(vida));
     }
 }
 
