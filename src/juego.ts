@@ -3,7 +3,6 @@ import { Torre } from "./torre";
 import { Monstruo } from "./monstruo";
 import { TipoAtaque } from "./tipoAtaque";
 import { gameConfig } from "./config";
-import { Escena } from "./escena";
 
 export class Juego {
     private _mapa: number[][];
@@ -12,7 +11,7 @@ export class Juego {
     private _torres: Torre[];
     private _oleada: number = 0;
     private _vida: number;
-    private _escena: Escena;
+    private escena: String[][];
 
     constructor(mapa: number[][]) {
         this._torres = [];
@@ -21,18 +20,22 @@ export class Juego {
         this._vida = gameConfig.vidaJugador;
         this._mapa = mapa;
         this.init();
-        this._escena = new Escena();
     }
 
     private get _monstruosVivos() {
-        return this._monstruos.filter(m => m.vida > 0);
+        for (let m of this._monstruos) {
+            if (m.vida > 0) {
+                return m;
+            }
+        }
     }
 
     private init() {
         this.leerCamino();
 
-        //this.crearTorre(new Punto(1, 0), 2, new TipoAtaque(3, 500));
-        this.crearTorre(new Punto(1, 1), 2, new TipoAtaque(3, 500));
+        this.crearTorre(new Punto(2, 1), 2, new TipoAtaque(1, 500));
+        this.crearTorre(new Punto(1, 3), 2, new TipoAtaque(1, 500));
+        this.crearTorre(new Punto(2, 5), 2, new TipoAtaque(1, 500));
 
         this.comenzarOleada();
     }
@@ -83,9 +86,7 @@ export class Juego {
                 }
             }
 
-            this._escena.dibujarEscena(this._mapa, this._monstruosVivos, this._torres);
-            
-            console.log(this._vida.toString());
+            this.mostrarEscena();
         }, gameConfig.intervalo);
     }
 
@@ -102,22 +103,58 @@ export class Juego {
         this._torres.forEach(t => t.observar(this._monstruosVivos));
     }
 
-    private mostrarMapa() {
+    private crearEscena() {/*
+        Generacion de una tabla con strings y por lo tanto printeable, la cual 
+        corresponde a la escena o tablero completo actualizado.*/
+
+        let map_rows = this._mapa.length;
+        let map_cols = this._mapa[0].length;
+
+        //Crea formato de la escena
+        for (let i = 0; i < map_rows; i++) {
+            this.escena.push([]);
+        }
+
+        //crea una linea base
+        let void_row = [];
+        for (let i = 0; i < map_cols; i++) {
+            void_row.push('#');
+        }
+
+        //dibuja todas las lineas base
+        for (let row of this._mapa) {
+            row = void_row; 
+        }
+
+        //sobre dibuja camino
+        for (let posElement of this._camino) {
+            this.escena[posElement.x][posElement.y] = ' ';
+        }
+
+        //sobre dibuja monstruos
+        for (let m of this._monstruos) {
+            this.escena[m.posicion.x][m.posicion.y] = String(m.vida);
+        }
+
+        //sobre dibuja torres
+        for (let t of this._torres) {
+            this.escena[t.posicion.x][t.posicion.y] = 'T';
+        }
+    }
+
+    private mostrarEscena() {
         //Por implementar, dibujar monstruos y torres
         document.body.innerHTML = '';
         
-        for (let row of this._mapa) {
+        for (let row of this.escena) {
 
             for (let col of row) {
-                if (col === 0) {
-                    document.write('#');
-                } else {
-                    document.write(' ');
+                document.write(col);
                 }
             }
 
             document.write("<br />");
-        }       
+        }     
     }
 
     private leerCamino() {
